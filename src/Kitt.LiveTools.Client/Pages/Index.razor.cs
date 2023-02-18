@@ -9,10 +9,17 @@ public partial class Index
 {
     private ViewModel model = new();
 
+    private BotInfo? botDetail = null;
+
+    private DateTime? botStartTime = null;
+
     private IEnumerable<ScheduledStreaming> scheduledStreamings = Array.Empty<ScheduledStreaming>();
 
     [Inject]
     public IStreamingsClient StreamingsClient { get; set; } = default!;
+
+    [Inject]
+    public IBotClient BotClient { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -23,27 +30,42 @@ public partial class Index
         {
             model.StreamingId = scheduledStreamings.First().Id;
         }
+
+        botDetail = await BotClient.GetBotDetailAsync();
+
+        //setup signalr connection -> subscribe to bot start / stop notification
+        //start signalr connection
     }
 
     private async Task SaveStreamingStatsAsync()
     {
+        var stats = new StreamingStats
+        {
+            StreamingId = model.StreamingId!.Value,
+            Subscribers = model.Subscribers,
+            UserJoinedNumber = model.UserJoinedNumber,
+            UserLeftNumber = model.UserLeftNumber,
+            Viewers = model.Viewers,
+        };
+
         try
         {
-            var stats = new StreamingStats
-            {
-                StreamingId = model.StreamingId!.Value,
-                Subscribers = model.Subscribers,
-                UserJoinedNumber = model.UserJoinedNumber,
-                UserLeftNumber = model.UserLeftNumber,
-                Viewers = model.Viewers,
-            };
-
             await StreamingsClient.SaveStreamingStatsAsync(stats);
         }
         catch
         {
 
         }
+    }
+
+    private async Task StartBotAsync()
+    {
+        await BotClient.StartBotAsync();
+    }
+
+    private async Task StopBotAsync()
+    {
+        await BotClient.StopBotAsync();
     }
 
     public class ViewModel

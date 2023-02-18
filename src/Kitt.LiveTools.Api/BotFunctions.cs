@@ -24,10 +24,22 @@ public class BotFunctions
     {
         _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-        await Services.StartBotAsync();
+        try
+        {
+            await Services.StartBotAsync();
 
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        return response;
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            return response;
+        }
+        catch (HttpRequestException ex)
+        {
+            var statusCode = ex.StatusCode ?? HttpStatusCode.InternalServerError;
+            return req.CreateResponse(statusCode);
+        }
+        catch
+        {
+            return req.CreateResponse(HttpStatusCode.InternalServerError);
+        }
     }
 
     [Function(nameof(StopBot))]
@@ -36,9 +48,49 @@ public class BotFunctions
     {
         _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-        await Services.StopBotAsync();
+        try
+        {
+            await Services.StopBotAsync();
 
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        return response;
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            return response;
+        }
+        catch (HttpRequestException ex)
+        {
+            var statusCode = ex.StatusCode ?? HttpStatusCode.InternalServerError;
+            return req.CreateResponse(statusCode);
+        }
+        catch
+        {
+            return req.CreateResponse(HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [Function(nameof(GetBotDetail))]
+    public async Task<HttpResponseData> GetBotDetail(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "bot")] HttpRequestData req)
+    {
+        try
+        {
+            var botDetail = await Services.GetBotDetail();
+            if (botDetail is null)
+            {
+                return req.CreateResponse(HttpStatusCode.NotFound);
+            }
+
+            var response = req.CreateResponse();
+            await response.WriteAsJsonAsync(botDetail, HttpStatusCode.OK);
+
+            return response;
+        }
+        catch (HttpRequestException ex)
+        {
+            var statusCode = ex.StatusCode ?? HttpStatusCode.InternalServerError;
+            return req.CreateResponse(statusCode);
+        }
+        catch
+        {
+            return req.CreateResponse(HttpStatusCode.InternalServerError);
+        }
     }
 }

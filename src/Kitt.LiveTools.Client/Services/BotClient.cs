@@ -1,35 +1,35 @@
 ﻿using Kitt.LiveTools.Shared.Models;
 using System.Net.Http.Json;
 
-namespace Kitt.LiveTools.Api.Services;
+namespace Kitt.LiveTools.Client.Services;
 
-public class BotServices
+public class BotClient : IBotClient
 {
     public HttpClient Client { get; }
 
-    public BotServices(HttpClient client)
+    public BotClient(HttpClient client)
     {
         Client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
     public async Task StartBotAsync()
     {
-        var response = await Client.PostAsync("/api/continuouswebjobs/LemonBot/start", null);
+        using var response = await Client.PostAsync("api/bot/start", null);
         response.EnsureSuccessStatusCode();
     }
 
     public async Task StopBotAsync()
     {
-        var response = await Client.PostAsync("/api/continuouswebjobs/LemonBot/stop", null);
+        using var response = await Client.PostAsync("api/bot/stop", null);
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<BotInfo?> GetBotDetail()
+    public async Task<BotInfo> GetBotDetailAsync()
     {
-        var detail = await Client.GetFromJsonAsync<BotInfo>("/api/continuouswebjobs/LemonBot");
+        var detail = await Client.GetFromJsonAsync<BotInfo>("api/bot");
         if (detail is null)
         {
-            return null;
+            throw new InvalidOperationException("BOT detail not found");
         }
 
         return detail;

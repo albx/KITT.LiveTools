@@ -1,0 +1,53 @@
+﻿<div class="row align-content-center">
+    @if (BotInfo is null)
+    {
+        <div class="col">
+            <div class="alert alert-info">
+                Informazioni del BOT non ancora disponibili...
+            </div>
+        </div>
+    }
+    else
+    {
+        @if (!BotInfo.IsRunning)
+        {
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary" @onclick="StartBotAsync">Avvia il BOT</button>
+            </div>
+            <div class="col">
+                <div class="alert alert-info">
+                    Il BOT attualmente non è attivo. Clicca sul bottone per attivarlo
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-success" @onclick="StopBotAsync">Ferma il BOT</button>
+            </div>
+            <div class="col">
+                <div class="alert alert-success">
+                    Il BOT è attivo (@StartTime?.ToString()). Clicca sul bottone per fermarlo
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public BotInfo? BotInfo { get; set; }
+
+    [Parameter]
+    public DateTime? StartTime { get; set; }
+
+    [Parameter]
+    public EventCallback OnBotStart { get; set; }
+
+    [Parameter]
+    public EventCallback OnBotStop { get; set; }
+
+    private async Task StartBotAsync() => await OnBotStart.InvokeAsync();
+
+    private async Task StopBotAsync() => await OnBotStop.InvokeAsync();
+}

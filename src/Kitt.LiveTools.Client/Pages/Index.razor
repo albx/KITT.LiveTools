@@ -27,16 +27,10 @@
             </h2>
             <div id="botContainer" class="accordion-collapse collapse show" aria-labelledby="botHeading" data-bs-parent="#liveManagement">
                 <div class="accordion-body">
-                    <div class="row align-content-center">
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-outline-primary">Avvia il BOT</button>
-                        </div>
-                        <div class="col">
-                            <div class="alert alert-info">
-                                Il BOT attualmente non è attivo. Clicca sul bottone per attivarlo
-                            </div>
-                        </div>
-                    </div>
+                    <BotDetail BotInfo="botDetail"
+                               StartTime="botStartTime"
+                               OnBotStart="StartBotAsync"
+                               OnBotStop="StopBotAsync"/>
                 </div>
             </div>
         </div>

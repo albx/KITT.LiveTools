@@ -10,5 +10,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddHttpClient<IStreamingsClient, StreamingsHttpClient>(
     client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
+builder.Services.AddHttpClient<IBotClient, BotClient>(
+    client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
 
 await builder.Build().RunAsync();

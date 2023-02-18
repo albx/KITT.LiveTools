@@ -20,7 +20,7 @@ public class StreamingsHttpClient : IStreamingsClient
 
     public async Task SaveStreamingStatsAsync(StreamingStats stats)
     {
-        var response = await Client.PostAsJsonAsync("api/streamings/stats", stats);
+        using var response = await Client.PostAsJsonAsync("api/streamings/stats", stats);
         response.EnsureSuccessStatusCode();
     }
 }
