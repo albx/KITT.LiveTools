@@ -1,14 +1,15 @@
 ﻿@page "/"
 
-@inject IStreamingsClient StreamingsClient
-
 <PageTitle>KITT - Live tools</PageTitle>
 
-<EditForm Model="model" role="form" class="row g-3 align-items-center">
+<EditForm Model="model" role="form" class="row g-3 align-items-center" OnValidSubmit="SaveStreamingStatsAsync">
     <div class="col">
         <label class="visually-hidden">Current streaming</label>
         <InputSelect @bind-Value="model.StreamingId" class="form-control">
-            <option value="@Guid.NewGuid()">Mia live di test</option>
+            @foreach (var streaming in scheduledStreamings)
+            {
+                <option value="@streaming.Id">@streaming.Title</option>
+            }
         </InputSelect>
     </div>
     <div class="col-auto">
@@ -82,26 +83,3 @@
         </div>
     </div>
 </div>
-
-@code {
-    private ViewModel model = new();
-
-    protected override Task OnInitializedAsync()
-    {
-        return base.OnInitializedAsync();
-    }
-
-    public class ViewModel
-    {
-        [System.ComponentModel.DataAnnotations.Required]
-        public Guid? StreamingId { get; set; }
-
-        public int Viewers { get; set; }
-
-        public int Subscribers { get; set; }
-
-        public int UserJoinedNumber { get; set; }
-
-        public int UserLeftNumber { get; set; }
-    }
-}

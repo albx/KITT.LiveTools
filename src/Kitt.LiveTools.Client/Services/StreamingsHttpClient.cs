@@ -1,4 +1,5 @@
 ﻿using Kitt.LiveTools.Shared.Models;
+using System.Net.Http.Json;
 
 namespace Kitt.LiveTools.Client.Services;
 
@@ -11,13 +12,15 @@ public class StreamingsHttpClient : IStreamingsClient
         Client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public Task<IEnumerable<ScheduledStreaming>> GetScheduledStreamingsAsync()
+    public async Task<IEnumerable<ScheduledStreaming>> GetScheduledStreamingsAsync()
     {
-        throw new NotImplementedException();
+        var scheduledStreamings = await Client.GetFromJsonAsync<IEnumerable<ScheduledStreaming>>("api/streamings");
+        return scheduledStreamings ?? Array.Empty<ScheduledStreaming>();
     }
 
-    public Task SaveStreamingStatsAsync(StreamingStats stats)
+    public async Task SaveStreamingStatsAsync(StreamingStats stats)
     {
-        throw new NotImplementedException();
+        var response = await Client.PostAsJsonAsync("api/streamings/stats", stats);
+        response.EnsureSuccessStatusCode();
     }
 }

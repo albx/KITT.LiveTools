@@ -38,6 +38,11 @@ public class StreamingFunctions
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "streamings/stats")] HttpRequestData req)
     {
         var streamingStats = await req.ReadFromJsonAsync<StreamingStats>();
+        if (streamingStats is null)
+        {
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }
+
         await Services.SaveStreamingStatsAsync(streamingStats);
 
         var response = req.CreateResponse(HttpStatusCode.OK);
