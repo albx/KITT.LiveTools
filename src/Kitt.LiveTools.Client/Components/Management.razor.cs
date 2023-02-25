@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
-namespace Kitt.LiveTools.Client.Pages;
+namespace Kitt.LiveTools.Client.Components;
 
-public partial class Index : IAsyncDisposable
+public partial class Management : IAsyncDisposable
 {
     private ViewModel model = new();
 

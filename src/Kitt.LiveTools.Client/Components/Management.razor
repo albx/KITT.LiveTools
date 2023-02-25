@@ -1,0 +1,75 @@
+﻿<EditForm Model="model" role="form" class="row g-3 align-items-center" OnValidSubmit="SaveStreamingStatsAsync">
+    <div class="col">
+        <label class="visually-hidden">Current streaming</label>
+        <InputSelect @bind-Value="model.StreamingId" class="form-control">
+            @foreach (var streaming in scheduledStreamings)
+            {
+                <option value="@streaming.Id">@streaming.Title</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-primary">Save</button>
+    </div>
+</EditForm>
+<hr />
+<div class="row">
+    <div class="accordion" id="liveManagement">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="botHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#botContainer" aria-expanded="true" aria-controls="botContainer">
+                    Gestione BOT
+                </button>
+            </h2>
+            <div id="botContainer" class="accordion-collapse collapse show" aria-labelledby="botHeading" data-bs-parent="#liveManagement">
+                <div class="accordion-body">
+                    <BotDetail BotInfo="botDetail"
+                               StartTime="botStartTime"
+                               OnBotStart="StartBotAsync"
+                               OnBotStop="StopBotAsync" />
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="statsHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#statsContainer" aria-expanded="false" aria-controls="statsContainer">
+                    Statistiche
+                </button>
+            </h2>
+            <div id="statsContainer" class="accordion-collapse collapse" aria-labelledby="statsHeading" data-bs-parent="#liveManagement">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>@model.Viewers.Count spettatori</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>@model.Subscribers abbonati</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>@model.UserJoinedNumber utenti in live</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>@model.UserLeftNumber utenti hanno abbandonato la live</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
